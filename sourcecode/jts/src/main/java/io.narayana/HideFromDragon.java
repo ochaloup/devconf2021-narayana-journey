@@ -11,15 +11,13 @@ import org.omg.CosTransactions.Resource;
 import org.omg.CosTransactions.ResourcePOA;
 import org.omg.CosTransactions.Vote;
 
-public class TestResource extends ResourcePOA {
+public class HideFromDragon extends ResourcePOA {
 
     private final boolean doCommit;
-
     private final Resource reference;
 
-    public TestResource(final boolean doCommit) {
+    public HideFromDragon(final boolean doCommit) {
         ORBManager.getPOA().objectIsReady(this);
-
         this.doCommit = doCommit;
         reference = org.omg.CosTransactions.ResourceHelper.narrow(ORBManager.getPOA().corbaReference(this));
     }
@@ -28,34 +26,32 @@ public class TestResource extends ResourcePOA {
         return reference;
     }
 
-    public org.omg.CosTransactions.Vote prepare() throws SystemException, HeuristicMixed, HeuristicHazard {
-        System.out.println("TestResource : prepare");
+    public org.omg.CosTransactions.Vote prepare() throws SystemException {
+        System.out.println("HideFromDragon : in preparation");
 
         if (doCommit) {
-            System.out.println("\tTestResource : VoteCommit");
-
+            System.out.println("\tHideFromDragon : VoteCommit");
             return Vote.VoteCommit;
         } else {
-            System.out.println("\tTestResource : VoteRollback");
-
+            System.out.println("\tHideFromDragon : VoteRollback");
             return Vote.VoteRollback;
         }
     }
 
-    public void rollback() throws SystemException, HeuristicCommit, HeuristicMixed, HeuristicHazard {
-        System.out.println("TestResource : rollback");
+    public void rollback() throws SystemException {
+        System.out.println("HideFromDragon : rollback");
     }
 
-    public void commit() throws SystemException, NotPrepared, HeuristicRollback, HeuristicMixed, HeuristicHazard {
-        System.out.println("TestResource : commit");
+    public void commit() throws SystemException {
+        System.out.println("HideFromDragon : commit");
     }
 
     public void forget() throws SystemException {
-        System.out.println("TestResource : forget");
+        System.out.println("HideFromDragon : forget");
     }
 
-    public void commit_one_phase() throws SystemException, HeuristicHazard {
-        System.out.println("TestResource : commit_one_phase");
+    public void commit_one_phase() throws SystemException {
+        System.out.println("HideFromDragon : commit_one_phase");
     }
 
 }

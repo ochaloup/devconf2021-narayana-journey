@@ -14,20 +14,14 @@ import java.util.Properties;
 
 public class JTSMain implements AutoCloseable {
 
-    /**
-     * This has to be changed to the IP of the client, which would be accessible from Docker container
-     */
-    private static String CLIENT_IP = System.getProperty("CLIENT_IP", "localhost");
+    private static String NAME_SERVER_IP = System.getProperty("name.server.ip", "127.0.0.1");
+    private static String NAME_SERVER_PORT = System.getProperty("name.server.port", "3528");
+    private static String CLIENT_IP = System.getProperty("client.ip", "127.0.0.1");
 
-    /**
-     * This has to be changed to the IP of the JTS Docker image
-     */
-    private static String NAME_SERVER_IP = System.getProperty("NAME_SERVER_IP", "localhost");
-
-    /**
-     * This has to be changed to the PORT of the name service running inside JTS Docker image.
-     */
-    private static String NAME_SERVER_PORT = System.getProperty("NAME_SERVER_PORT", "3528");
+    private static enum Action {
+        COMMIT, ROLLBACK, RESOURCE_ROLLBACK;
+    }
+    private Action action = Action.valueOf(System.getProperty("action", "COMMIT"));
 
     private ORB testORB;
     private OA testOA;
@@ -77,25 +71,36 @@ public class JTSMain implements AutoCloseable {
         // JTSMain jtsMain = new JTSMain();
         try (JTSMain jtsMain = new JTSMain()) {
             jtsMain.setup();
-            jtsMain.testCommit();
+
+            switch (jtsMain.action) {
+                case COMMIT:
+                    jtsMain.commit();
+                    return;
+                case ROLLBACK:
+                    jtsMain.rollback();
+                    return;
+                case RESOURCE_ROLLBACK:
+                    jtsMain.resourceRollback();
+                    return;
+            }
         }
     }
 
-    public void testCommit() {
-        System.out.println("JTSDockerContainerTest.testCommit");
-        System.out.println("Begin transaction");
+    public void commit() {
+        System.out.println("Mission hide and steal");
+        System.out.println("Begin transaction to commit");
         Control control = transactionFactory.create(0);
 
-        final TestResource firstResource = new TestResource(true);
-        final TestResource secondResource = new TestResource(true);
+        final HideFromDragon hidingResource = new HideFromDragon(true);
+        final StealTheRing stealingResource = new StealTheRing(true);
 
-        final Resource firstReference = firstResource.getReference();
-        final Resource secondReference = secondResource.getReference();
+        final Resource hidingReference = hidingResource.getReference();
+        final Resource stealingReference = stealingResource.getReference();
 
         try {
-            System.out.println("Enlist resources");
-            control.get_coordinator().register_resource(firstReference);
-            control.get_coordinator().register_resource(secondReference);
+            System.out.println("Register resources to be part of the mission");
+            control.get_coordinator().register_resource(hidingReference);
+            control.get_coordinator().register_resource(stealingReference);
 
             System.out.println("Commit transaction");
             control.get_terminator().commit(true);
@@ -104,47 +109,52 @@ public class JTSMain implements AutoCloseable {
         }
     }
 
-    public void testRollback() throws Exception {
-        System.out.println("JTSDockerContainerTest.testRollback");
-        System.out.println("Begin transaction");
+    public void rollback() {
+        System.out.println("Mission hide, steal and withdraw");
+        System.out.println("Begin transaction to rollback");
         Control control = transactionFactory.create(0);
 
-        final TestResource firstResource = new TestResource(true);
-        final TestResource secondResource = new TestResource(true);
+        final HideFromDragon hidingResource = new HideFromDragon(true);
+        final StealTheRing stealingResource = new StealTheRing(true);
 
-        final Resource firstReference = firstResource.getReference();
-        final Resource secondReference = secondResource.getReference();
-
-        System.out.println("Enlist resources");
-        control.get_coordinator().register_resource(firstReference);
-        control.get_coordinator().register_resource(secondReference);
-
-        System.out.println("Rollback transaction");
-        control.get_terminator().rollback();
-    }
-
-    public void testResourceRollback() throws Exception {
-        System.out.println("JTSDockerContainerTest.testResourceRollback");
-        System.out.println("Begin transaction");
-        Control control = transactionFactory.create(0);
-
-        final TestResource firstResource = new TestResource(true);
-        final TestResource secondResource = new TestResource(false);
-
-        final Resource firstReference = firstResource.getReference();
-        final Resource secondReference = secondResource.getReference();
-
-        System.out.println("Enlist resources");
-        control.get_coordinator().register_resource(firstReference);
-        control.get_coordinator().register_resource(secondReference);
-
-        System.out.println("Commit transaction");
+        final Resource hidingReference = hidingResource.getReference();
+        final Resource stealingReference = stealingResource.getReference();
 
         try {
+            System.out.println("Register resources to be part of the mission");
+            control.get_coordinator().register_resource(hidingReference);
+            control.get_coordinator().register_resource(stealingReference);
+
+            System.out.println("Rollback transaction");
+            control.get_terminator().rollback();
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot enlist and/or rollback ORB transaction.", e);
+        }
+    }
+
+    public void resourceRollback() {
+        System.out.println("Mission hide and fail to steal");
+        System.out.println("Begin transaction to fail to steal");
+        Control control = transactionFactory.create(0);
+
+        final HideFromDragon hidingResource = new HideFromDragon(true);
+        final StealTheRing stealingResource = new StealTheRing(false);
+
+        final Resource hidingReference = hidingResource.getReference();
+        final Resource stealingReference = stealingResource.getReference();
+
+        try {
+            System.out.println("Enlist resources");
+            control.get_coordinator().register_resource(hidingReference);
+            control.get_coordinator().register_resource(stealingReference);
+
+            System.out.println("Commit transaction (but fail as voted to rollback)");
             control.get_terminator().commit(true);
             throw new IllegalStateException("Rollback expected, commit cannot work.");
         } catch (TRANSACTION_ROLLEDBACK e) {
             // Expected
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot enlist and/or resource rollback ORB transaction.", e);
         }
     }
 
