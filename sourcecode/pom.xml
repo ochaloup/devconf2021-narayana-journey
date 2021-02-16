@@ -11,5 +11,6 @@
    <modules>
        <module>jts</module>
        <module>jta</module>
+       <module>stm</module>
    </modules>
 </project>
