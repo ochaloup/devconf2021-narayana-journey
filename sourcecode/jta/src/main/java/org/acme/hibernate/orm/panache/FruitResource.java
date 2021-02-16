@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.RollbackException;
+import javax.transaction.Synchronization;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,6 +37,9 @@ public class FruitResource {
 
     private static final Logger LOGGER = Logger.getLogger(FruitResource.class.getName());
 
+    @Inject
+    TransactionManager tm;
+
     @GET
     public List<Fruit> get() {
         return Fruit.listAll(Sort.by("name"));
@@ -50,7 +57,7 @@ public class FruitResource {
 
     @POST
     @Transactional
-    public Response create(Fruit fruit) {
+    public Response create(Fruit fruit) throws SystemException, RollbackException {
         if (fruit.id != null) {
             throw new WebApplicationException("Id was invalidly set on request.", 422);
         }
@@ -81,11 +88,22 @@ public class FruitResource {
     @DELETE
     @Path("{id}")
     @Transactional
-    public Response delete(@PathParam Long id) {
+    public Response delete(@PathParam Long id) throws SystemException, RollbackException {
         Fruit entity = Fruit.findById(id);
         if (entity == null) {
             throw new WebApplicationException("Fruit with id of " + id + " does not exist.", 404);
         }
+        tm.getTransaction().registerSynchronization(new Synchronization() {
+            @Override
+            public void beforeCompletion() {
+                LOGGER.warn(">>>>>>>>>>>>>>>>>>>> before completion");
+            }
+
+            @Override
+            public void afterCompletion(int status) {
+                LOGGER.warn(">>>>>>>>>>>>>>>>>>>> after completion : " + status);
+            }
+        });
         entity.delete();
         return Response.status(204).build();
     }
