@@ -1,42 +1,28 @@
-Narayana JTS in Docker example.
-==================================================================================================
-Author: Gytis Trikleris;
-Level: Intermediate;
-Technologies: Docker, JTS
+= JTS Narayana example
 
-What is it?
------------
+Adapted from
+https://github.com/jbosstm/quickstart/tree/master/jts-docker
 
-This example demonstrates how to use Narayana JTS deployed in Docker container.
+== How to run
 
-Manual containers management
----------------------------
+Prepare Podman[https://podman.io] pod for deploy
+the Jacorb naming server and JTS transaction service.
 
-### Starting name server
+[source,sh]
+----
+podman pod create --name jts -p 127.0.0.1:3528:3528 -p 127.0.0.1:4711:4711
+----
 
-    docker run -p 3528:3528 -it --name jacorb-name-server jboss/jacorb-name-server
+Start the naming server and JTS Narayana transaction manager
 
-
-### Starting transaction service
-
-On Linux
-
-    docker run -p 4711:4711 -it --link jacorb-name-server:jacorb-name-server --name jts-transaction-service jboss/jts-transaction-service
-
-On Boot2Docker
-
-    docker run -p 4711:4711 -it -e "PROXY_IP={Boot2Docker IP}" --link jacorb-name-server:jacorb-name-server --name jts-transaction-service jboss/jts-transaction-service
+[source,sh]
+----
+podman run --pod jts --rm -it  --name jacorb-name-server jboss/jacorb-name-server
+podman run -e "JACORB_NAME_SERVER_ENV_NAME_SERVER_PORT=3528"  --pod jts -it --rm --name jts-transaction-service jboss/jts-transaction-service
+----
 
 
-Containers management with Kubernetes
--------------------------------------
 
-    kubectl create -f kubernetes/jts-pod.yaml
-
-Build and run the quickstart
--------------------------------
-
-If you have started containers manually:
 
     mvn clean test -Pdocker -DNAME_SERVER_IP=<docker container's IP or Boot2Docker IP> -DNAME_SERVER_PORT=<name server's PORT, defaults to 3528> -DCLIENT_IP=<yoJTSDockerContainerTestur IP accessible for the container>
 
