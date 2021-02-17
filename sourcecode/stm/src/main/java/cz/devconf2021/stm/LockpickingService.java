@@ -5,7 +5,7 @@ import org.jboss.stm.annotations.Transactional;
 
 @Transactional
 @NestedTopLevel
-public interface LockpickingTransactionalService {
-    int getLockpickingAction();
-    void addLockpickingAction(String details);
+public interface LockpickingService {
+    void doAction();
+    int getActionNumber();
 }

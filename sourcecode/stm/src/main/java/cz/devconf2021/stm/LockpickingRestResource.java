@@ -22,11 +22,11 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class LockpickingRestResource {
     ExecutorService executor;
 
-    @ConfigProperty(name = "org.acme.quickstart.stm.threadpool.size")
+    @ConfigProperty(name = "cz.devconf2021.stm.threadpool.size")
     int threadPoolSize;;
 
     @Inject
-    LockpickingServiceFactory factory;
+    LockpickingServiceFactory serviceFactory;
 
     @PostConstruct
     void postConstruct() {
@@ -40,37 +40,26 @@ public class LockpickingRestResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public CompletionStage<String> bookingCount() {
+    public CompletionStage<String> actionNumber() {
         return CompletableFuture.supplyAsync(
-                () -> getInfo(factory.getInstance()),
+                () -> getInfo(serviceFactory.getInstance()),
                 executor);
     }
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
-    public CompletionStage<String> asynBook() {
+    public CompletionStage<String> doAction() {
         return CompletableFuture.supplyAsync(() -> {
-            LockpickingTransactionalService flightService = factory.getInstance();
+            LockpickingService lockpickingService = serviceFactory.getInstance();
 
-            flightService.makeBooking("BA123");
+            lockpickingService.doAction();
 
-            return getInfo(flightService);
+            return getInfo(lockpickingService);
         }, executor);
     }
 
-    @POST
-    @Path("sync")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String book() {
-        LockpickingTransactionalService flightService = factory.getInstance();
-
-        flightService.makeBooking("BA123");
-
-        return getInfo(flightService);
-    }
-
-    private String getInfo(LockpickingTransactionalService flightService) {
+    private String getInfo(LockpickingService lockpickingService) {
         return Thread.currentThread().getName()
-                + ":  Booking Count=" + flightService.getNumberOfBookings();
+                + ":  Action Number = " + lockpickingService.getActionNumber();
     }
 }

@@ -27,7 +27,7 @@ class STMResourceTest {
         makeBooking();
         responseString = makeBooking();
 
-        assertThat(responseString, containsString("Booking Count=2"));
+        assertThat(responseString, containsString("Action Number = 2"));
     }
 
     private String makeBooking() {

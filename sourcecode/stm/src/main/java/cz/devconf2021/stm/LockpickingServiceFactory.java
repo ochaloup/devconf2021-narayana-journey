@@ -6,17 +6,17 @@ import org.jboss.stm.Container;
 
 @ApplicationScoped
 class LockpickingServiceFactory {
-    private LockpickingTransactionalService flightServiceProxy;
+    private LockpickingService lockpickingServiceProxy;
 
-    private void initFlightServiceFactory() {
-        Container<LockpickingTransactionalService> container = new Container<>();
-        flightServiceProxy = container.create(new FlightServiceImpl());
+    private void initLockpickingServiceFactory() {
+        Container<LockpickingService> container = new Container<>();
+        lockpickingServiceProxy = container.create(new LockpickingServiceImpl());
     }
 
-    LockpickingTransactionalService getInstance() {
-        if (flightServiceProxy == null) {
-            initFlightServiceFactory();
+    LockpickingService getInstance() {
+        if (lockpickingServiceProxy == null) {
+            initLockpickingServiceFactory();
         }
-        return flightServiceProxy;
+        return lockpickingServiceProxy;
     }
 }
