@@ -1,10 +1,10 @@
-package org.acme.software.transactional.memory;
+package cz.devconf2021.stm;
 
 import org.jboss.stm.annotations.ReadLock;
 import org.jboss.stm.annotations.State;
 import org.jboss.stm.annotations.WriteLock;
 
-public class FlightServiceImpl implements FlightService {
+public class FlightServiceImpl implements LockpickingTransactionalService {
     @State
     private int numberOfBookings;
 

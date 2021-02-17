@@ -1,4 +1,4 @@
-package org.acme.software.transactional.memory;
+package cz.devconf2021.stm;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -19,14 +19,14 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Path("/stm")
 @RequestScoped
-public class FlightResource {
+public class LockpickingRestResource {
     ExecutorService executor;
 
     @ConfigProperty(name = "org.acme.quickstart.stm.threadpool.size")
     int threadPoolSize;;
 
     @Inject
-    FlightServiceFactory factory;
+    LockpickingServiceFactory factory;
 
     @PostConstruct
     void postConstruct() {
@@ -50,7 +50,7 @@ public class FlightResource {
     @Produces(MediaType.TEXT_PLAIN)
     public CompletionStage<String> asynBook() {
         return CompletableFuture.supplyAsync(() -> {
-            FlightService flightService = factory.getInstance();
+            LockpickingTransactionalService flightService = factory.getInstance();
 
             flightService.makeBooking("BA123");
 
@@ -62,14 +62,14 @@ public class FlightResource {
     @Path("sync")
     @Produces(MediaType.TEXT_PLAIN)
     public String book() {
-        FlightService flightService = factory.getInstance();
+        LockpickingTransactionalService flightService = factory.getInstance();
 
         flightService.makeBooking("BA123");
 
         return getInfo(flightService);
     }
 
-    private String getInfo(FlightService flightService) {
+    private String getInfo(LockpickingTransactionalService flightService) {
         return Thread.currentThread().getName()
                 + ":  Booking Count=" + flightService.getNumberOfBookings();
     }

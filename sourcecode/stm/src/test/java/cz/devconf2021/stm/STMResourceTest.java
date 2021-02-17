@@ -1,4 +1,4 @@
-package org.acme.software.transactional.memory;
+package cz.devconf2021.stm;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;

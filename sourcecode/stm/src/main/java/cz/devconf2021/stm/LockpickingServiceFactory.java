@@ -1,19 +1,19 @@
-package org.acme.software.transactional.memory;
+package cz.devconf2021.stm;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.stm.Container;
 
 @ApplicationScoped
-class FlightServiceFactory {
-    private FlightService flightServiceProxy;
+class LockpickingServiceFactory {
+    private LockpickingTransactionalService flightServiceProxy;
 
     private void initFlightServiceFactory() {
-        Container<FlightService> container = new Container<>();
+        Container<LockpickingTransactionalService> container = new Container<>();
         flightServiceProxy = container.create(new FlightServiceImpl());
     }
 
-    FlightService getInstance() {
+    LockpickingTransactionalService getInstance() {
         if (flightServiceProxy == null) {
             initFlightServiceFactory();
         }
