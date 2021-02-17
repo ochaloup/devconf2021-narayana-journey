@@ -9,7 +9,6 @@
   <packaging>war</packaging>
 
   <properties>
-    <version.checkstyle.plugin>3.0.0</version.checkstyle.plugin>
     <version.jboss.logging>3.3.2.Final</version.jboss.logging>
     <version.lra.api>1.0-M1</version.lra.api>
     <version.narayana>5.10.6.Final</version.narayana>
@@ -35,7 +34,7 @@
   </dependencyManagement>
 
   <build>
-    <finalName>devconf2019-flightbooking</finalName>
+    <finalName>devconf2021-adventurer-service</finalName>
     <plugins>
       <plugin>
         <groupId>io.thorntail</groupId>
@@ -45,25 +44,6 @@
           <execution>
             <goals>
               <goal>package</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${version.checkstyle.plugin}</version>
-        <configuration>
-          <configLocation>checkstyle.xml</configLocation>
-          <consoleOutput>true</consoleOutput>
-          <failsOnError>true</failsOnError>
-        </configuration>
-        <executions>
-          <execution>
-            <id>check-style</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>checkstyle</goal>
             </goals>
           </execution>
         </executions>
@@ -126,7 +106,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.rts</groupId>
-      <artifactId>lra-filters</artifactId>
+      <artifactId>narayana-lra</artifactId>
       <version>${version.narayana}</version>
     </dependency>
   </dependencies>
