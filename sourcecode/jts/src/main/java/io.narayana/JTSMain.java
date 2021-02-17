@@ -91,8 +91,8 @@ public class JTSMain implements AutoCloseable {
         System.out.println("Begin transaction to commit");
         Control control = transactionFactory.create(0);
 
-        final HideFromDragon hidingResource = new HideFromDragon(true);
-        final StealTheRing stealingResource = new StealTheRing(true);
+        final CloakHiding hidingResource = new CloakHiding(true);
+        final Lockpicking stealingResource = new Lockpicking(true);
 
         final Resource hidingReference = hidingResource.getReference();
         final Resource stealingReference = stealingResource.getReference();
@@ -114,8 +114,8 @@ public class JTSMain implements AutoCloseable {
         System.out.println("Begin transaction to rollback");
         Control control = transactionFactory.create(0);
 
-        final HideFromDragon hidingResource = new HideFromDragon(true);
-        final StealTheRing stealingResource = new StealTheRing(true);
+        final CloakHiding hidingResource = new CloakHiding(true);
+        final Lockpicking stealingResource = new Lockpicking(true);
 
         final Resource hidingReference = hidingResource.getReference();
         final Resource stealingReference = stealingResource.getReference();
@@ -137,8 +137,8 @@ public class JTSMain implements AutoCloseable {
         System.out.println("Begin transaction to fail to steal");
         Control control = transactionFactory.create(0);
 
-        final HideFromDragon hidingResource = new HideFromDragon(true);
-        final StealTheRing stealingResource = new StealTheRing(false);
+        final CloakHiding hidingResource = new CloakHiding(true);
+        final Lockpicking stealingResource = new Lockpicking(false);
 
         final Resource hidingReference = hidingResource.getReference();
         final Resource stealingReference = stealingResource.getReference();

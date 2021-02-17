@@ -1,3 +1,3 @@
-INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Cherry');
-INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Apple');
-INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Banana');
+INSERT INTO CloakHiding(id, cloakAction) VALUES (nextval('hibernate_sequence'), 'Hide in shadows');
+INSERT INTO CloakHiding(id, cloakAction) VALUES (nextval('hibernate_sequence'), 'Disguise costume');
+INSERT INTO CloakHiding(id, cloakAction) VALUES (nextval('hibernate_sequence'), 'Wealthy appearance');
