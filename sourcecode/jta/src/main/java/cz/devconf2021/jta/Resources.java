@@ -56,7 +56,7 @@ public class Resources {
         // synchronization callback on transaction is ending
         tm.getTransaction().registerSynchronization(new NoticeMe());
 
-        // additional resource to take into transactional unit of work
+        // additional resource to take into transactional unit of workA
         tm.getTransaction().enlistResource(new Lockpicking());
 
         return Response.ok(newCloakThing).status(201).build();
