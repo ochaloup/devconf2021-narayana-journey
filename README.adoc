@@ -1,0 +1,6 @@
+= Presentation for DevConf 2021
+
+**Narayana: Java library for transaction processing**
+
+Slides at link:./slides.pdf[]
+
