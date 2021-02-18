@@ -31,8 +31,8 @@ import io.quarkus.panache.common.Sort;
 @ApplicationScoped
 @Produces("application/json")
 @Consumes("application/json")
-public class RestEndpoints {
-    private static final Logger LOGGER = Logger.getLogger(RestEndpoints.class);
+public class Resources {
+    private static final Logger LOGGER = Logger.getLogger(Resources.class);
 
     @Inject
     TransactionManager tm;

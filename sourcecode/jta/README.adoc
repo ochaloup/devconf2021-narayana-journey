@@ -5,7 +5,7 @@ https://github.com/quarkusio/quarkus-quickstarts/tree/master/hibernate-orm-panac
 
 This works with Qurakus ORM Panache accessing the H2 in memory database.
 
-The `RestEndpoints` uses the CDI `@Transactional`
+The `Resources` uses the CDI `@Transactional`
 and adds some JTA API calls on top of it.
 
 JTA API doc
